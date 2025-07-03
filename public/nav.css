@@ -1,0 +1,126 @@
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     scrollbar-color: red;
+ }
+ /* Full scrollbar */
+::-webkit-scrollbar {
+  width: .4rem;
+}
+
+/* Scrollbar Track (background) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Scrollbar Thumb (draggable part) */
+::-webkit-scrollbar-thumb {
+  background: red;
+  border-radius: 10px;
+}
+
+/* On hover */
+::-webkit-scrollbar-thumb:hover {
+  background: darkred;
+}
+
+ body {
+     font-family: Arial, sans-serif;
+      
+ }
+ 
+ .hidden{
+    display: none;
+ }
+
+ .navbar {
+     background-color: white;
+     color: black;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 1rem 2rem;
+     border-bottom: 1px solid #ccc;
+     position: sticky;
+     top: 0;
+     z-index: 1000;
+
+ }
+
+ .logo {
+     font-size: 1.5rem;
+     font-weight: bold;
+     color: #333;
+
+ }
+
+ .nav-links {
+     list-style: none;
+     display: flex;
+     gap: 1.5rem;
+
+ }
+
+ .nav-links li a {
+     text-decoration: none;
+     color: #333;
+     font-weight: 500;
+     transition: 0.3s;
+
+ }
+
+ .nav-links li a:hover {
+     color: #fa3838;
+ }
+
+ .hamberger {
+     display: none;
+     font-size: 1.8rem;
+     cursor: pointer;
+
+ }
+
+ .nav-links a i {
+     margin-right: 8px;
+     /* space between icon and text */
+ }
+ .fa-compass
+ {
+    color: red;
+    font-size: larger;
+     
+ }
+
+ @media (max-width:768px) {
+     .nav-links {
+         position: absolute;
+         top: 70px;
+         right: 0;
+         width: 200px;
+         height: calc(100vh - 70px);
+         background: white;
+         flex-direction: column;
+         align-items: center;
+         padding: 1rem;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+         display: none;
+
+     }
+
+     .nav-links.active {
+         display: flex;
+
+     }
+
+     .hamberger {
+         display: block;
+
+     }
+ }
+
+ a {
+     text-decoration: none;
+     color: unset;
+
+ }

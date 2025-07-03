@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= thisListing.title %> | WanderLust</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fef9f4;
+      color: #2c2c2c;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .listing-wrapper {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .listing-image {
+      width: 100%;
+      height: 420px;
+      background-size: cover;
+      background-position: center;
+      border-bottom: 4px solid #ff385c;
+    }
+
+    .listing-content {
+      padding: 2rem;
+    }
+
+    .title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .location {
+      font-size: 1rem;
+      color: #777;
+      margin-bottom: 1rem;
+    }
+
+    .description {
+      font-size: 1.05rem;
+      color: #555;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .price {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 2rem;
+    }
+
+    .btn-book {
+      display: inline-block;
+      background-color: #ff385c;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .btn-book:hover {
+      background-color: #e03150;
+    }
+
+    .cta {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .cta form button {
+      background-color: #333;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .cta form button:hover {
+      background-color: #222;
+    }
+
+    /* Reviews Section */
+    .review-section {
+      padding: 2rem;
+      background: #fff8f0;
+      border-top: 1px solid #eee;
+    }
+
+    .review-title {
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-form label {
+      display: block;
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+
+    .review-form input,
+    .review-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .btn-submit-review {
+      margin-top: 1rem;
+      background-color: #ff385c;
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn-submit-review:hover {
+      background-color: #e03150;
+    }
+
+    .reviews-container {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .review-card {
+      background: #fff;
+      border-left: 4px solid #ff385c;
+      padding: 1rem 1.2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .review-rating {
+      font-weight: bold;
+      color: #ff385c;
+    }
+
+    .review-text {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 0.8rem;
+    }
+
+    .delete-btn {
+      background-color: #000;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      background-color: #444;
+    }
+
+    .no-reviews {
+      color: #777;
+      font-style: italic;
+    }
+    /* Owner Section */
+    .owner-section {
+      background-color: #fff8f0;
+      padding: 2rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .owner-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #ddd;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .owner-details h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .owner-details p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+
+    @media (max-width: 768px) {
+      .listing-wrapper {
+        margin: 1rem;
+      }
+
+      .listing-image {
+        height: 250px;
+      }
+
+      .listing-content {
+        padding: 1.2rem;
+      }
+
+      .title {
+        font-size: 1.5rem;
+      }
+
+      .cta {
+        flex-direction: column;
+      }
+      .owner-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+      <link rel="icon" href="/wanderlusticon.png" type="image/x-icon">
+
+</head>
+
+<body>
+  <%- include("../partials/navbar.ejs") %>
+  <%- include("../partials/flash.ejs") %>
+
+  <div class="listing-wrapper">
+    <div class="listing-image" style="background-image: url('<%= thisListing.image.url %>');"></div>
+    <div class="listing-content">
+      <h1 class="title"><%= thisListing.title %></h1>
+      <p class="location">📍 <%= thisListing.location %></p>
+      <p class="description"><%= thisListing.description %></p>
+      <p class="price">₹ <%= thisListing.price.toLocaleString("en-IN") %> / night</p>
+      <a href="/book/<%= thisListing._id %>" class="btn-book">Book Now</a>
+
+      <% if(currUser && currUser._id.equals(thisListing.owner._id)){ %>
+
+        <div class="cta">
+        <form action="/listings/<%= thisListing._id %>/edit" method="get">
+          <button type="submit">Edit</button>
+        </form>
+        <form action="/listings/<%= thisListing._id %>/delete?_method=DELETE" method="post">
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+
+
+        <% } %>
+    </div>
+
+    <!-- Owner Section -->
+    <div class="owner-section">
+      <!-- <div class="owner-avatar" style="background-image: url('https://placehold.co/600x400?text=Hello+World');"> </div> -->
+      <div class="owner-details">
+        <h3 style="color: red;">About Host</h3>
+        <h3><%= thisListing.owner.username %></h3>
+        <p>Hosting since: 5 years</p>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="review-section">
+      <h2 class="review-title">Reviews</h2>
+
+      <!-- Add Review Form -->
+      <% if(currUser) {%>
+        <form action="/listings/<%= thisListing._id %>/reviews" method="POST" class="review-form">
+        <label for="rating">Rating (1–5):</label>
+        <input type="range" id="rating" name="rating" min="1" max="5" required />
+
+        <label for="comment">Your Review:</label>
+        <textarea id="comment" name="comment" rows="3"  placeholder="Write your thoughts..." required></textarea>
+
+        <button type="submit" class="btn-submit-review">Submit Review</button>
+      </form>
+        <% }else{ %>
+            <h4 style="color: rgb(148, 68, 68);">Login to write a review </h4>
+       <% } %>
+
+      <% if (thisListing.reviews.length === 0) { %>
+        <p class="no-reviews">No reviews yet. Be the first to review!</p>
+      <% } else { %>
+        <hr>
+        <div class="reviews-container">
+          <% thisListing.reviews.forEach(review => { %>
+            <div class="review-card">
+              <div class="review-header">
+                <h4><b>@</b><%= review.author.username  %></h4>
+                <span class="review-rating"> <%= review.rating %>⭐</span>
+                <span class="review-date">
+                  <%= new Date(review.createdAt).toLocaleDateString("en-IN", {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  }) %>
+                </span>
+              </div>
+              <p class="review-text"><%= review.comment %></p>
+              <% if(currUser && currUser._id.equals(review.author._id)) { %>
+                <form action="/listings/<%= thisListing._id %>/review/<%= review._id %>/delete" method="POST">
+                <button class="delete-btn" type="submit">🗑 Delete</button>
+              </form>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <%- include("../partials/footer.ejs") %>
+</body>
+
+</html>
