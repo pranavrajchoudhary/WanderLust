@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | <%= listing.title %></title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f7f5;
+    }
+    .airbnb-btn {
+      background-color: #FF385C;
+      color: white;
+      transition: 0.3s;
+    }
+    .airbnb-btn:hover {
+      background-color: #e03150;
+    }
+    .airbnb-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+  </style>
+</head>
+<body class="p-4">
+
+  <!-- Container -->
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-semibold mb-6 text-gray-800">Complete your booking</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- Left Side: Form -->
+      <div class="md:col-span-2 airbnb-card">
+
+        <!-- Stay Details -->
+        <h2 class="text-xl font-semibold mb-4">Your Stay</h2>
+        <form action="/checkout" method="POST" id="checkoutForm" class="space-y-6">
+
+          <!-- Dates -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block mb-1 font-medium">Check-in</label>
+              <input type="date" name="fromDate" required class="w-full border rounded-lg p-2">
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Check-out</label>
+              <input type="date" name="toDate" required class="w-full border rounded-lg p-2">
+            </div>
+          </div>
+
+          <!-- Guests -->
+          <div>
+            <label class="block mb-1 font-medium">Number of Guests</label>
+            <input type="number" name="guests" min="1" value="1" required class="w-full border rounded-lg p-2">
+          </div>
+
+          <!-- Guest Details -->
+          <div id="guestDetailsSection">
+            <label class="block mb-2 font-medium">Guest Details</label>
+            <div class="guest-detail flex gap-2 mb-2">
+              <input type="text" name="guestNames[]" placeholder="Full Name" required class="w-1/2 border rounded-lg p-2">
+              <input type="number" name="guestAges[]" placeholder="Age" required class="w-1/4 border rounded-lg p-2">
+            </div>
+          </div>
+          <button type="button" id="addGuestBtn" class="text-sm text-blue-600">+ Add another guest</button>
+
+          <!-- Contact Info -->
+          <div>
+            <label class="block mb-1 font-medium">Your Email</label>
+            <input type="email" name="email" required class="w-full border rounded-lg p-2">
+          </div>
+
+          <div>
+            <label class="block mb-1 font-medium">Phone Number</label>
+            <input type="tel" name="phone" required class="w-full border rounded-lg p-2">
+          </div>
+
+          <!-- Special Requests -->
+          <div>
+            <label class="block mb-1 font-medium">Special Requests (Optional)</label>
+            <textarea name="requests" rows="3" class="w-full border rounded-lg p-2"></textarea>
+          </div>
+
+          <!-- Pay Now -->
+          <div class="pt-6">
+            <button type="submit" class="w-full py-3 rounded-lg airbnb-btn font-medium text-lg">
+              Pay Now
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Side: Booking Summary -->
+      <div class="airbnb-card">
+        <img src="<%= listing.image %>" alt="Listing Image" class="w-full h-40 object-cover rounded-lg mb-4">
+        <h2 class="text-lg font-semibold mb-2"><%= listing.title %></h2>
+        <p class="text-gray-600 mb-1"><%= listing.location %></p>
+        <p class="text-gray-900 font-medium mb-4">₹ <%= listing.price %> / night</p>
+
+        <hr class="my-2">
+
+        <div class="flex justify-between text-gray-700 mb-1">
+          <span>Base Price</span>
+          <span>₹ <%= listing.price %></span>
+        </div>
+        <div class="flex justify-between text-gray-700 mb-1">
+          <span>Service Fee</span>
+          <span>₹ 500</span>
+        </div>
+        <div class="flex justify-between text-gray-900 font-semibold mt-2">
+          <span>Total</span>
+          <span>₹ <%= listing.price + 500 %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS for Add Guest -->
+  <script>
+    document.getElementById("addGuestBtn").addEventListener("click", () => {
+      const section = document.getElementById("guestDetailsSection");
+      const div = document.createElement("div");
+      div.classList.add("guest-detail", "flex", "gap-2", "mb-2");
+      div.innerHTML = `
+        <input type="text" name="guestNames[]" placeholder="Full Name" required class="w-1/2 border rounded-lg p-2">
+        <input type="number" name="guestAges[]" placeholder="Age" required class="w-1/4 border rounded-lg p-2">
+      `;
+      section.appendChild(div);
+    });
+  </script>
+
+</body>
+</html>

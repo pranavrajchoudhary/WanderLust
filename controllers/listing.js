@@ -81,7 +81,7 @@ module.exports.update = async (req, res) => {
         ? [parseFloat(geoRes.data[0].lon), parseFloat(geoRes.data[0].lat)]
         : [0, 0]; // fallback
     await Listing.findByIdAndUpdate(id, {
-        title,
+        title,//title here or name
         description,
         image: imageData,
         price,

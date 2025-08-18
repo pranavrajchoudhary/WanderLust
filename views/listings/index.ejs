@@ -60,10 +60,10 @@
                 </div>
 
 
-                <button class="tax-toggle" id="taxToggle">Display total before taxes</button>
+                <button class="tax-toggle" id="taxToggle">Display total with taxes</button>
             </div>
 
-            <h1 class="page-title">All AirBnBs</h1>
+          
 
             <div class="listings-container">
                 <% allListings.forEach(i=> { %>
@@ -101,7 +101,7 @@
                         });
                     }
 
-                    searchInput.addEventListener('input', filterCards);
+                    
                     searchBtn.addEventListener('click', filterCards);
 
                     const filters = document.querySelectorAll('.filter-item');
