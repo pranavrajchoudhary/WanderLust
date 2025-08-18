@@ -39,6 +39,17 @@ const listingSchema = new schema(
         owner: {
             type: schema.Types.ObjectId,
             ref: "User",
+        },
+        geometry: {
+            type: {
+                type: String,
+                enum: ['Point'],
+                default: 'Point'
+            },
+            coordinates: {
+                type: [Number], // [lng, lat]
+                default: [0, 0]
+            }
         }
 
     }

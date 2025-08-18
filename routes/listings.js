@@ -1,11 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const Listing = require("../models/listing");
 const wrapAsync = require("../utils/wrapAsync");
 const { listingSchema } = require("../schema");
 const ExpressError = require("../utils/ExpressError");
-const {isLoggedIn} = require("../middlewares");
-const {isOwner} = require("../middlewares");
+const { isLoggedIn } = require("../middlewares");
+const { isOwner } = require("../middlewares");
+
+const multer = require('multer');
+const {storage} = require('../cloudConfig')
+const upload = multer({storage})
 // Middleware
 const validateListing = (req, res, next) => {
     const { error } = listingSchema.validate(req.body);
@@ -13,80 +16,31 @@ const validateListing = (req, res, next) => {
     next();
 };
 
+const listingController = require('../controllers/listing');
+
+
 // Home
 router.get("/", (req, res) => {
-    
+
     res.render("listings/home.ejs");
 });
-
-// Index
-router.get("/listings", wrapAsync(async (req, res) => {
+// Index and create
+router.route('/listings')
+    .get(wrapAsync(listingController.index))
+    .post(isLoggedIn, validateListing,upload.single('image'), wrapAsync(listingController.create));
     
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
-}));
+// New form render
+router.get("/listings/new", isLoggedIn, listingController.new);
 
-// New
-router.get("/listings/new",isLoggedIn, (req, res) => {
-     
-    res.render("listings/new.ejs");
-});
+// Show and Update
 
-// Show
-router.get("/listings/:id", wrapAsync(async (req, res) => {
-    const listing = await Listing.findById(req.params.id).populate({path : "reviews", populate : { path : "author"}}).populate("owner");
-    if(!listing){
-        req.flash("error","Listing not found !")
-       return res.redirect("/listings")
-    }else{
-        res.render("listings/show.ejs", { thisListing: listing });
-
-    }
-}));
+router.route('/listings/:id')
+    .get(wrapAsync(listingController.show))
+    .put(isLoggedIn, isOwner, validateListing, upload.single('image'),wrapAsync(listingController.update));
 
 // Edit
-router.get("/listings/:id/edit", isLoggedIn,isOwner, wrapAsync(async (req, res) => {
-    const listing = await Listing.findById(req.params.id);
-    res.render("listings/edit.ejs", { listing });
-}));
+router.get("/listings/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.edit));
 
-// Create
-router.post("/listings",isLoggedIn, validateListing, wrapAsync(async (req, res) => {
-    const { title, description, image, price, location, country } = req.body;
-    const newListing = new Listing({
-        title, description, image: { url: image, filename: title },
-        price, location, country
-    });
-    newListing.owner = req.user._id;
-    await newListing.save();
-    req.flash("success", "New listing created !")
-    res.redirect("/listings");
-}));
-
-// Update
-router.put("/listings/:id",isLoggedIn,isOwner, validateListing, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const { title, description, image, price, location, country } = req.body;
-    // let listing = await Listing.findById(id);
-
-    // if(!listing.owner._id.equals(res.locals.currUser._id)){
-    //     req.flash("error","You don't have permission to edit this listing !");
-    //   return  res.redirect(`/listings/${id}`);
-    // }
-
-    await Listing.findByIdAndUpdate(id, {
-        title, description, image: { url: image, filename: title },
-        price, location, country
-    });
-    req.flash("success","Listing Updated succesfully!")
-    res.redirect(`/listings/${id}`);
-}));
-
-// Delete
-router.delete("/listings/:id/delete", isLoggedIn,isOwner, wrapAsync(async (req, res) => {
-    let rslt = await Listing.findByIdAndDelete(req.params.id);
-    req.flash("success", `Deleted ${rslt.title} Successfully!`)
-    res.redirect("/listings");
-}));
+router.delete("/listings/:id/delete", isLoggedIn, isOwner, wrapAsync(listingController.delete));
 
 module.exports = router;

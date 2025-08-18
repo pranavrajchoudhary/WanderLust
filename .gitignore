@@ -1,6 +1,6 @@
 .env
-node_modules
-
-.DS_Store
+node_modules/
 *.log
 npm-debug.log*
+trial.html
+init/

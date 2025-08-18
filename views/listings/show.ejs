@@ -4,10 +4,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= thisListing.title %> | WanderLust</title>
+  <title>
+    <%= thisListing.title %> | WanderLust
+  </title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
     * {
@@ -22,7 +29,9 @@
       color: #2c2c2c;
     }
 
-    h1, h2, h3 {
+    h1,
+    h2,
+    h3 {
       font-family: 'Playfair Display', serif;
     }
 
@@ -108,103 +117,6 @@
       background-color: #222;
     }
 
-    /* Reviews Section */
-    .review-section {
-      padding: 2rem;
-      background: #fff8f0;
-      border-top: 1px solid #eee;
-    }
-
-    .review-title {
-      font-size: 1.6rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .review-form label {
-      display: block;
-      font-weight: 500;
-      margin-top: 1rem;
-    }
-
-    .review-form input,
-    .review-form textarea {
-      width: 100%;
-      padding: 0.75rem;
-      margin-top: 0.5rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .btn-submit-review {
-      margin-top: 1rem;
-      background-color: #ff385c;
-      color: #fff;
-      padding: 0.6rem 1.2rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .btn-submit-review:hover {
-      background-color: #e03150;
-    }
-
-    .reviews-container {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .review-card {
-      background: #fff;
-      border-left: 4px solid #ff385c;
-      padding: 1rem 1.2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    .review-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-size: 0.95rem;
-      color: #555;
-    }
-
-    .review-rating {
-      font-weight: bold;
-      color: #ff385c;
-    }
-
-    .review-text {
-      font-size: 1rem;
-      color: #333;
-      margin-bottom: 0.8rem;
-    }
-
-    .delete-btn {
-      background-color: #000;
-      color: white;
-      border: none;
-      padding: 0.4rem 0.9rem;
-      font-size: 0.85rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .delete-btn:hover {
-      background-color: #444;
-    }
-
-    .no-reviews {
-      color: #777;
-      font-style: italic;
-    }
     /* Owner Section */
     .owner-section {
       background-color: #fff8f0;
@@ -236,6 +148,11 @@
       color: #555;
     }
 
+    /* Map */
+    #map {
+      width: 100%;
+      height: 300px;
+    }
 
     @media (max-width: 768px) {
       .listing-wrapper {
@@ -257,14 +174,15 @@
       .cta {
         flex-direction: column;
       }
+
       .owner-section {
         flex-direction: column;
         align-items: flex-start;
       }
     }
   </style>
-      <link rel="icon" href="/wanderlusticon.png" type="image/x-icon">
-
+  <link rel="icon" href="/wanderlusticon.png" type="image/x-icon">
+  <link rel="stylesheet" href="/review.css">
 </head>
 
 <body>
@@ -274,15 +192,18 @@
   <div class="listing-wrapper">
     <div class="listing-image" style="background-image: url('<%= thisListing.image.url %>');"></div>
     <div class="listing-content">
-      <h1 class="title"><%= thisListing.title %></h1>
+      <h1 class="title">
+        <%= thisListing.title %>
+      </h1>
       <p class="location">📍 <%= thisListing.location %></p>
-      <p class="description"><%= thisListing.description %></p>
+      <p class="description">
+        <%= thisListing.description %>
+      </p>
       <p class="price">₹ <%= thisListing.price.toLocaleString("en-IN") %> / night</p>
       <a href="/book/<%= thisListing._id %>" class="btn-book">Book Now</a>
 
       <% if(currUser && currUser._id.equals(thisListing.owner._id)){ %>
-
-        <div class="cta">
+      <div class="cta">
         <form action="/listings/<%= thisListing._id %>/edit" method="get">
           <button type="submit">Edit</button>
         </form>
@@ -290,17 +211,23 @@
           <button type="submit">Delete</button>
         </form>
       </div>
-
-
-        <% } %>
+      <% } %>
     </div>
+
+    <!-- Map Section -->
+    <% if (thisListing.geometry && thisListing.geometry.coordinates && thisListing.geometry.coordinates.length === 2) { %>
+      <div id="map"></div>
+    <% } else { %>
+      <p style="padding:1rem; color:#777;">No map location available for this listing.</p>
+    <% } %>
 
     <!-- Owner Section -->
     <div class="owner-section">
-      <!-- <div class="owner-avatar" style="background-image: url('https://placehold.co/600x400?text=Hello+World');"> </div> -->
       <div class="owner-details">
         <h3 style="color: red;">About Host</h3>
-        <h3><%= thisListing.owner.username %></h3>
+        <h3>
+          <%= thisListing.owner.username %>
+        </h3>
         <p>Hosting since: 5 years</p>
       </div>
     </div>
@@ -308,45 +235,49 @@
     <!-- Reviews Section -->
     <div class="review-section">
       <h2 class="review-title">Reviews</h2>
-
-      <!-- Add Review Form -->
-      <% if(currUser) {%>
+      <% if(currUser) { %>
         <form action="/listings/<%= thisListing._id %>/reviews" method="POST" class="review-form">
-        <label for="rating">Rating (1–5):</label>
-        <input type="range" id="rating" name="rating" min="1" max="5" required />
+          <fieldset class="starability-slot">
+            <legend>First rating:</legend>
+            <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+            <input type="radio" id="first-rate1" name="rating" value="1" />
+            <label for="first-rate1" title="Terrible">1 star</label>
+            <input type="radio" id="first-rate2" name="rating" value="2" />
+            <label for="first-rate2" title="Not good">2 stars</label>
+            <input type="radio" id="first-rate3" name="rating" value="3" />
+            <label for="first-rate3" title="Average">3 stars</label>
+            <input type="radio" id="first-rate4" name="rating" value="4" />
+            <label for="first-rate4" title="Very good">4 stars</label>
+            <input type="radio" id="first-rate5" name="rating" value="5" />
+            <label for="first-rate5" title="Amazing">5 stars</label>
+          </fieldset>
+          <label for="comment">Your Review:</label>
+          <textarea id="comment" name="comment" rows="3" placeholder="Write your thoughts..." required></textarea>
+          <button type="submit" class="btn-submit-review">Submit Review</button>
+        </form>
+      <% } else { %>
+        <h4 style="color: rgb(148, 68, 68);">Login to write a review</h4>
+      <% } %>
 
-        <label for="comment">Your Review:</label>
-        <textarea id="comment" name="comment" rows="3"  placeholder="Write your thoughts..." required></textarea>
-
-        <button type="submit" class="btn-submit-review">Submit Review</button>
-      </form>
-        <% }else{ %>
-            <h4 style="color: rgb(148, 68, 68);">Login to write a review </h4>
-       <% } %>
-
-      <% if (thisListing.reviews.length === 0) { %>
+      <% if (thisListing.reviews.length===0) { %>
         <p class="no-reviews">No reviews yet. Be the first to review!</p>
       <% } else { %>
         <hr>
         <div class="reviews-container">
-          <% thisListing.reviews.forEach(review => { %>
+          <% thisListing.reviews.forEach(review=> { %>
             <div class="review-card">
               <div class="review-header">
-                <h4><b>@</b><%= review.author.username  %></h4>
-                <span class="review-rating"> <%= review.rating %>⭐</span>
+                <h4><b>@</b><%= review.author.username %></h4>
+                <p class="starability-result" data-rating="<%- review.rating %>">Rated: <%= review.rating %> stars</p>
                 <span class="review-date">
-                  <%= new Date(review.createdAt).toLocaleDateString("en-IN", {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                  }) %>
+                  <%= new Date(review.createdAt).toLocaleDateString("en-IN", { year: 'numeric' , month: 'short' , day: 'numeric' }) %>
                 </span>
               </div>
               <p class="review-text"><%= review.comment %></p>
               <% if(currUser && currUser._id.equals(review.author._id)) { %>
                 <form action="/listings/<%= thisListing._id %>/review/<%= review._id %>/delete" method="POST">
-                <button class="delete-btn" type="submit">🗑 Delete</button>
-              </form>
+                  <button class="delete-btn" type="submit">🗑 Delete</button>
+                </form>
               <% } %>
             </div>
           <% }) %>
@@ -356,6 +287,22 @@
   </div>
 
   <%- include("../partials/footer.ejs") %>
-</body>
 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <% if (thisListing.geometry && thisListing.geometry.coordinates && thisListing.geometry.coordinates.length === 2) { %>
+    <script>
+      const coords = <%- JSON.stringify(thisListing.geometry.coordinates) %>; // [lng, lat]
+      const map = L.map('map').setView([coords[1], coords[0]], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      L.marker([coords[1], coords[0]]).addTo(map)
+        .bindPopup(`<b><%= thisListing.title %></b><br><%= thisListing.location %>`)
+        .openPopup();
+    </script>
+  <% } %>
+</body>
 </html>

@@ -11,13 +11,15 @@ require("dotenv").config();
 const listingsRouter = require("./routes/listings");
 const reviewsRouter = require("./routes/reviews");
 const userRouter = require("./routes/user");
-const session = require("express-session");
 
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user");
 const { send } = require("process");
-
+const { error } = require("console");
+const dburl = process.env.ATLAS_URL
 
 const mongoURL = process.env.MONGO_URI;
 
@@ -29,12 +31,25 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, "public")));
 
 
-main().then(() => console.log("connectedToDb")).catch(err => console.log(err));
 async function main() {
-    await mongoose.connect(mongoURL);
+    await mongoose.connect(dburl);
 }
+main().then(() => console.log("connectedToDb")).catch(err => console.log(err));
+
+const store = MongoStore.create({
+    mongoUrl: dburl,
+    crypto:{
+        secret: process.env.SESSION_SECRET
+    },
+    touchAfter: 24*3600,
+});
+
+store.on("error",()=>{
+    console.log("Session Error -Mongo",error);
+})
 
 const sessionOpt = {
+    store,
     secret : process.env.SESSION_SECRET,
     resave : false,
     saveUninitialized : true,
@@ -44,6 +59,7 @@ const sessionOpt = {
         httpOnly : true,
     }
 }
+
 
 app.use(session(sessionOpt));
 app.use(flash());
@@ -81,6 +97,7 @@ app.use("/",userRouter);
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page not found !!!"));
 });
+
 
 // Error handler
 app.use((err, req, res, next) => {

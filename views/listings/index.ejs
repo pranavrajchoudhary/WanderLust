@@ -6,110 +6,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listings | WanderLust</title>
     <link rel="stylesheet" href=" /index.css">
-        <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-zeHGQI4HvdJxsC9z28tZ9_gpIPE0hDM73Q&s"  >
+    <link rel="icon"
+        href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-zeHGQI4HvdJxsC9z28tZ9_gpIPE0hDM73Q&s">
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a2e0e6ad95.js" crossorigin="anonymous"></script>
 
-     <style>
-        .search-container {
-    text-align: center;
-    margin: 20px auto;
-}
-
-#searchInput {
-    padding: 10px 15px;
-    width: 90%;
-    max-width: 500px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
-
-/* Mobile Responsive */
-@media (max-width: 600px) {
-    #searchInput {
-        width: 95%;
-        font-size: 0.9rem;
-    }
-}
-
-     </style>
 
 </head>
+
 <%- include("../partials/navbar.ejs") %>
-<%- include("../partials/flash.ejs") %>
+    <%- include("../partials/flash.ejs") %>
 
-    <body>
-        <!-- Search Bar -->
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search stay by title or location...">
-</div>
+        <body>
 
-        
-        <h1 class="page-title">All Listings</h1>
-
-<div class="listings-container">
-    <% allListings.forEach(i => { %>
-    <div class="listing-card">
-        <a href="/listings/<%-i._id%>" >
-            <img src="<%- i.image.url %>" alt="<%- i.title %>">
-            <div class="listing-content">
-                <h2><%- i.title %></h2>
-                <p class="location">📍 <%- i.location %></p>
-                <p class="price">₹<%- i.price %> / night</p>
-                <button class="view-btn">View Details</button>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search stay by title or location...">
+                <button class="search-btn">Search</button>
             </div>
-        </a>
-    </div>
-    <% }); %>
-</div>
+
+            <div class="filters-wrapper">
+                <div class="filters-scroll-area">
+
+                    <div class="scroll-btn scroll-left"><i class="fas fa-chevron-left"></i></div>
+
+                    <!-- Filters -->
+                    <div class="filters-container" id="filters">
+                        <div class="filter-item active"><i class="fas fa-mountain"></i><br><span>Mountains</span></div>
+                        <div class="filter-item"><i class="fas fa-umbrella-beach"></i><br><span>Beach</span></div>
+                        <div class="filter-item"><i class="fas fa-city"></i><br><span>City</span></div>
+                        <div class="filter-item"><i class="fas fa-home"></i><br><span>Cabins</span></div>
+                        <div class="filter-item"><i class="fas fa-water"></i><br><span>Lakes</span></div>
+                        <div class="filter-item"><i class="fas fa-tree"></i><br><span>Camping</span></div>
+                        <div class="filter-item"><i class="fas fa-hot-tub-person"></i><br><span>Lux</span></div>
+                        <div class="filter-item"><i class="fas fa-fire"></i><br><span>Trending</span></div>
+                        <div class="filter-item"><i class="fas fa-dog"></i><br><span>Pet Friendly</span></div>
+                        <div class="filter-item"><i class="fas fa-person-swimming"></i><br><span>Pools</span></div>
+                        <div class="filter-item"><i class="fas fa-wifi"></i><br><span>Wi-Fi</span></div>
+                        <div class="filter-item"><i class="fas fa-snowflake"></i><br><span>Arctic</span></div>
+                        <div class="filter-item"><i class="fas fa-igloo"></i><br><span>Igloos</span></div>
+                        <div class="filter-item"><i class="fas fa-tent"></i><br><span>Tents</span></div>
+                        <div class="filter-item"><i class="fas fa-sailboat"></i><br><span>Boats</span></div>
+                        <div class="filter-item"><i class="fas fa-vihara"></i><br><span>Historical</span></div>
+                        <div class="filter-item"><i class="fas fa-wind"></i><br><span>Windmills</span></div>
+                        <div class="filter-item"><i class="fas fa-mug-hot"></i><br><span>B&B</span></div>
+                        <div class="filter-item"><i class="fas fa-chess-rook"></i><br><span>Castles</span></div>
+                    </div>
 
 
+                    <div class="scroll-btn scroll-right"><i class="fas fa-chevron-right"></i></div>
+                </div>
 
 
+                <button class="tax-toggle" id="taxToggle">Display total before taxes</button>
+            </div>
 
+            <h1 class="page-title">All AirBnBs</h1>
 
+            <div class="listings-container">
+                <% allListings.forEach(i=> { %>
+                    <div class="listing-card">
+                        <a href="/listings/<%-i._id%>">
+                            <img src="<%- i.image.url %>" alt="<%- i.title %>">
+                            <div class="listing-content">
+                                <h2><%- i.title %></h2>
+                                <p class="location">📍 <%- i.location %></p>
+                                <p class="price" data-base="<%- i.price %>">₹<%- i.price %> / night</p>
+                                <button class="view-btn">View Details</button>
+                            </div>
+                        </a>
+                    </div>
+                    <% }); %>
+            </div>
 
+            <%- include("../partials/footer.ejs") %>
 
+                <script>
+                    const searchInput = document.getElementById('searchInput');
+                    const searchBtn = document.querySelector('.search-btn');
+                    const allCards = document.querySelectorAll('.listing-card');
 
+                    function filterCards() {
+                        const searchText = searchInput.value.toLowerCase();
+                        allCards.forEach(card => {
+                            const title = card.querySelector('h2').innerText.toLowerCase();
+                            const location = card.querySelector('.location').innerText.toLowerCase();
+                            if (title.includes(searchText) || location.includes(searchText)) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    }
 
- 
-        
- 
+                    searchInput.addEventListener('input', filterCards);
+                    searchBtn.addEventListener('click', filterCards);
 
+                    const filters = document.querySelectorAll('.filter-item');
+                    const container = document.getElementById('filters');
+                    const leftBtn = document.querySelector('.scroll-left');
+                    const rightBtn = document.querySelector('.scroll-right');
 
+                    filters.forEach(f => {
+                        f.addEventListener('click', () => {
+                            filters.forEach(el => el.classList.remove('active'));
+                            f.classList.add('active');
+                        });
+                    });
 
+                    leftBtn.addEventListener('click', () => {
+                        container.scrollBy({ left: -200, behavior: 'smooth' });
+                    });
 
-        <%- include("../partials/footer.ejs") %>
+                    rightBtn.addEventListener('click', () => {
+                        container.scrollBy({ left: 200, behavior: 'smooth' });
+                    });
 
+                    // Tax Toggle Logic
+                    const taxToggle = document.getElementById('taxToggle');
+                    let taxEnabled = false;
+                    taxToggle.addEventListener('click', () => {
+                        taxEnabled = !taxEnabled;
+                        taxToggle.classList.toggle('active');
+                        document.querySelectorAll('.price').forEach(p => {
+                            const base = parseFloat(p.getAttribute('data-base'));
+                            const taxed = Math.round(base * 1.05);
+                            if (taxEnabled) {
+                                p.innerText = `₹${taxed} / night (incl. tax)`;
+                            } else {
+                                p.innerText = `₹${base} / night`;
+                            }
+                        });
+                    });
+                </script>
 
-       
-        <script>
-// Ye JS search bar ko live filter krne ke liye h
-const searchInput = document.getElementById('searchInput');
-
-// Sabhi cards fetch krlo
-const allCards = document.querySelectorAll('.listing-card');
-
-searchInput.addEventListener('input', () => {
-    const searchText = searchInput.value.toLowerCase();
-
-    allCards.forEach(card => {
-        const title = card.querySelector('h2').innerText.toLowerCase();
-        const location = card.querySelector('.location').innerText.toLowerCase();
-
-        // Agar search match kare title ya location me toh show kro
-        if (title.includes(searchText) || location.includes(searchText)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-});
-</script>
-
-    </body>
+        </body>
 
 </html>
