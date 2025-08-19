@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Bookings</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+
+  <style>
+    body { background:#f8f7f5; }
+    .airbnb-btn { background:#FF385C; color:#fff; transition:.25s; }
+    .airbnb-btn:hover { background:#e03150; }
+    .airbnb-card { background:#fff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    .pill { padding:4px 10px; border-radius:9999px; font-size:.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px; }
+    .pill-paid { background:#ecfdf5; color:#065f46; }
+    .pill-pending { background:#fff7ed; color:#9a3412; }
+    .pill-cancelled { background:#fee2e2; color:#991b1b; }
+    .filter-btn { border:1px solid #e5e7eb; padding:.5rem .9rem; border-radius:9999px; background:#fff; font-size:.875rem; }
+    .filter-btn.active { border-color:#FF385C; color:#FF385C; }
+    .img-cover { width:100%; height:100%; object-fit:cover; border-radius:12px; aspect-ratio: 4/3; }
+  </style>
+</head>
+
+<%- include("../partials/navbar.ejs") %>
+<%- include("../partials/flash.ejs") %>
+
+<body class="p-4 md:p-6">
+  <div class="max-w-6xl mx-auto space-y-5">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-semibold text-gray-900">Your trips</h1>
+        <p class="text-gray-600">Manage and review all your bookings in one place.</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-2">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+        <button class="filter-btn" data-filter="past">Past</button>
+        <button class="filter-btn" data-filter="paid">Paid</button>
+        <button class="filter-btn" data-filter="pending">Pending</button>
+        <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+      </div>
+    </header>
+
+    <!-- Empty State -->
+    <% if (!orders || orders.length === 0) { %>
+      <div class="airbnb-card p-8 text-center">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">No bookings yet</h2>
+        <p class="text-gray-600 mb-6">When you book a place, it will show up here.</p>
+        <a href="/listings" class="airbnb-btn inline-block px-5 py-2 rounded-lg">Explore stays</a>
+      </div>
+    <% } %>
+
+    <!-- Bookings List -->
+    <div id="bookingsList" class="space-y-4">
+      <% (orders || []).forEach(function(b){ 
+           const l = b.listing || {};
+           const mainImg = (l.image && l.image.url) ? l.image.url : "https://images.unsplash.com/photo-1505691938895-1758d7feb511";
+           const status = (b.status || "pending").toLowerCase();
+      %>
+        <div 
+          class="airbnb-card p-4 md:p-5"
+          data-status="<%- status %>"
+          data-from="<%- b.fromDate %>"
+          data-to="<%- b.toDate %>"
+        >
+          <div class="flex flex-col md:flex-row gap-4">
+            
+            <!-- Image -->
+            <a href="/listings/<%- l._id %>" class="w-full md:w-48 lg:w-56 shrink-0">
+              <img src="<%- mainImg %>" alt="<%- l.title || 'Listing' %>" class="img-cover"/>
+            </a>
+
+            <!-- Middle Info -->
+            <div class="flex-1 space-y-2">
+              <div class="flex items-start justify-between">
+                <div>
+                  <a href="/listings/<%- l._id %>" class="text-lg md:text-xl font-semibold text-gray-900 hover:underline">
+                    <%- l.title || 'Untitled stay' %>
+                  </a>
+                  <div class="text-gray-600"><%= l.location || '' %></div>
+                </div>
+                <div>
+                  <% if (status === "paid") { %>
+                    <span class="pill pill-paid">Paid</span>
+                  <% } else if (status === "cancelled") { %>
+                    <span class="pill pill-cancelled">Cancelled</span>
+                  <% } else { %>
+                    <span class="pill pill-pending">Pending</span>
+                  <% } %>
+                </div>
+              </div>
+
+              <div class="text-gray-700 space-y-1">
+                <div>
+                  <span class="font-medium">Dates:</span>
+                  <span class="js-dates"><%= b.fromDate %> → <%= b.toDate %></span>
+                  <span class="text-gray-500">( <span class="js-nights">—</span> nights )</span>
+                </div>
+                <div>
+                  <span class="font-medium">Guests:</span> <%= b.guests %>
+                </div>
+                <% if (b.email) { %>
+                  <div>Email: <%= b.email %></div>
+                <% } %>
+                <% if (b.phone) { %>
+                  <div>Phone: <%= b.phone %></div>
+                <% } %>
+              </div>
+
+              <% if (b.requests) { %>
+                <div class="text-gray-600">
+                  <span class="font-medium">Special requests:</span>
+                  <%= b.requests %>
+                </div>
+              <% } %>
+
+              <% if (Array.isArray(b.guestNames) && b.guestNames.length) { %>
+                <div class="text-gray-600">
+                  <span class="font-medium">Guest details:</span>
+                  <ul class="list-disc ml-5">
+                    <% b.guestNames.forEach(function(name, idx){ %>
+                      <li><%= name %><% if (Array.isArray(b.guestAges) && b.guestAges[idx]) { %> — <%= b.guestAges[idx] %> yrs<% } %></li>
+                    <% }) %>
+                  </ul>
+                </div>
+              <% } %>
+            </div>
+
+            <!-- Right Column -->
+            <div class="flex flex-row md:flex-col justify-between items-end md:items-stretch gap-2 md:w-48">
+              <div class="text-right md:text-left">
+                <div class="text-gray-900 font-semibold text-lg">₹ <%= b.totalFare %></div>
+                <div class="text-gray-500 text-sm">Total</div>
+              </div>
+
+              <div class="flex flex-row md:flex-col gap-2 w-full">
+                <a href="/listings/<%- l._id %>" class="px-4 py-2 rounded-lg border text-gray-800 hover:bg-gray-50 text-center w-full">
+                  View place
+                </a>
+                <a href="/messages/start?listing=<%- l._id %>&order=<%- b._id %>" class="px-4 py-2 rounded-lg border text-gray-800 hover:bg-gray-50 text-center w-full">
+                  Message host
+                </a>
+                <% if (status === "paid") { %>
+                  <a href="/orders/<%- b._id %>/receipt" class="px-4 py-2 rounded-lg airbnb-btn text-center w-full">
+                    Get receipt
+                  </a>
+                <% } else if (status !== "cancelled") { %>
+                  <form action="/orders/<%- b._id %>/cancel" method="POST" class="w-full">
+                    <button type="submit" class="px-4 py-2 rounded-lg border text-gray-800 hover:bg-gray-50 w-full">
+                      Cancel
+                    </button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    const cards = document.querySelectorAll('#bookingsList > .airbnb-card');
+    const fmt = new Intl.DateTimeFormat(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+
+    cards.forEach(card => {
+      const fromISO = card.getAttribute('data-from');
+      const toISO = card.getAttribute('data-to');
+      const from = fromISO ? new Date(fromISO) : null;
+      const to = toISO ? new Date(toISO) : null;
+      const datesEl = card.querySelector('.js-dates');
+      const nightsEl = card.querySelector('.js-nights');
+
+      if (from && to && !isNaN(from) && !isNaN(to) && to > from) {
+        datesEl.textContent = `${fmt.format(from)} → ${fmt.format(to)}`;
+        const nights = Math.round((to - from) / (1000 * 60 * 60 * 24));
+        nightsEl.textContent = nights;
+      } else {
+        datesEl.textContent = '—';
+        nightsEl.textContent = '—';
+      }
+    });
+
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const now = new Date();
+
+    function applyFilter(type) {
+      cards.forEach(card => {
+        const status = (card.getAttribute('data-status') || '').toLowerCase();
+        const to = new Date(card.getAttribute('data-to'));
+        let show = true;
+
+        if (type === 'paid') show = status === 'paid';
+        else if (type === 'pending') show = status === 'pending';
+        else if (type === 'cancelled') show = status === 'cancelled';
+        else if (type === 'upcoming') show = !isNaN(to) && to >= new Date(now.toDateString());
+        else if (type === 'past') show = !isNaN(to) && to < new Date(now.toDateString());
+
+        card.style.display = show ? '' : 'none';
+      });
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter(btn.dataset.filter);
+      });
+    });
+
+    applyFilter('all');
+  </script>
+  <%- include("../partials/footer.ejs") %>
+</body>
+</html>

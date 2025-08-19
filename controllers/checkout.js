@@ -59,8 +59,8 @@ module.exports.checkout = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `https://wanderlust-nxrg.onrender.com/payment-success?oid=${order._id}`,
-      cancel_url: `https://wanderlust-nxrg.onrender.com/listings/${listing._id}/checkout`,
+      success_url: `http://localhost:8080/payment-success?oid=${order._id}`,
+      cancel_url: `http://localhost:8080/listings/${listing._id}/checkout`,
     });
 
     // Redirect to Stripe payment page

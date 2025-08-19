@@ -12,6 +12,7 @@ const listingsRouter = require("./routes/listings");
 const reviewsRouter = require("./routes/reviews");
 const userRouter = require("./routes/user");
 const checkoutRouter = require("./routes/checkout")
+const orderRoutes = require("./routes/Orders");
 
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -113,7 +114,9 @@ app.get("/payment-success", async (req, res) => {
     res.status(500).send("Error in success page");
   }
 });
--
+
+app.use("/orders", orderRoutes);
+
 
 // Catch-all 404
 app.use((req, res, next) => {
