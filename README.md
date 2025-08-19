@@ -6,7 +6,7 @@
 
 A production-ready Airbnb-style web app where users can explore, book, and manage stays. Built on Node/Express + MongoDB + EJS with clean UI, secure auth, Stripe payments, and an opinionated architecture that scales.
 
-**Live demo:** (add your domain here)
+**Live demo:** [WanderLust](https://wanderlust-nxrg.onrender.com/)
 
 -----
 
