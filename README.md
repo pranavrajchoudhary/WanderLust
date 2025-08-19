@@ -1,91 +1,165 @@
-
-# 🏡 WanderLust – Airbnb-style Full-Stack Web App
-
  
 
 ---
 
-### 📌 Overview
+```markdown
+# 🏡 Airbnb-Style Booking App
 
-**WanderLust** is a full-stack web application inspired by Airbnb. It allows users to explore, list, and review vacation rental properties across locations. Built with the **MERN stack**, the app focuses on clean UI, secure user authentication, full CRUD operations, and a scalable backend architecture.
-
----
-
-### 🚀 Features
-
-- 🔍 **Dynamic Listings**: View property cards with image, price, location & description.
-- 🧾 **Authentication & Authorization**: Secure login, register, and role-based access using Passport.js.
-- 🏡 **CRUD for Listings**: Users can create, edit, delete their own properties.
-- 💬 **Reviews System**: Authenticated users can leave reviews with ratings.
-- 📌 **Search & Filters**: Search properties by location or keyword.
-- 🖼️ **Image Uploads**: Cloudinary integration for uploading listing photos.
-- ⚙️ **Error Handling & Flash Messages**: Clean feedback using Express-flash and middleware.
-- 🔒 **Access Control**: Logged-in users can only edit/delete their own listings/reviews.
+An Airbnb-inspired booking platform built with **Node.js, Express, MongoDB, EJS**, and **Stripe** for payments.  
+Users can browse listings, book stays, make payments, and download PDF receipts for their bookings.
 
 ---
 
-### 🛠️ Tech Stack
+## 🚀 Features
 
-| Frontend      | Backend       | Database | Others                 |
-|---------------|----------------|----------|------------------------|
-| HTML, CSS, EJS | Node.js, Express.js | MongoDB  | Passport.js, Mongoose, Cloudinary, Method-Override, Bootstrap |
+- User Authentication (Login/Register)
+- Browse and Search Listings
+- Book Listings with Date & Guest Details
+- Stripe Payment Integration
+- Booking Management (My Bookings Page)
+- Generate PDF Receipts for Orders
+- Responsive Airbnb-style UI (EJS + CSS)
 
 ---
 
-### 📂 Folder Structure
+## 🛠️ Tech Stack
 
-```
-/wanderlust
-│
-├── models/           # Mongoose models
-├── routes/           # Express routes
-├── views/            # EJS templates
-├── public/           # Static assets (CSS, JS, Images)
-├── middleware/       # Auth & access control
-├── utils/            # Custom helpers
-└── app.js            # Main entry point
-└── init            # For initial data
+- **Backend:** Node.js, Express.js
+- **Frontend:** EJS, CSS
+- **Database:** MongoDB with ATLAS
+- **Payments:** Stripe Checkout
+- **PDF Generation:** pdfkit
+
+---
+
+## 📂 Project Structure
 
 ```
 
+📦 wanderlust
+├── 📁 models
+│   ├── Listing.js
+│   └── Order.js
+├── 📁 routes
+│   ├── listings.js
+│   ├── orders.js
+│   └── users.js
+├── 📁 views
+│   ├── listings
+│   │   ├── index.ejs
+│   │   └── show\.ejs
+│   ├── orders
+│   │   ├── bookings.ejs
+│   │   └── receipt.ejs
+│   ├── partials
+│   │   ├── header.ejs
+│   │   └── footer.ejs
+│   └── auth
+│       ├── login.ejs
+│       └── register.ejs
+├── app.js
+├── package.json
+├── .env
+└── README.md
+
+````
+
 ---
 
-### 💻 How to Run Locally
+## ⚙️ Installation
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/pranavrajchoudhary/wanderlust.git
-cd wanderlust
+1. **Clone Repo**
+   ```bash
+   git clone https://github.com/yourusername/airbnb-booking-app.git
+   cd airbnb-booking-app
+````
 
-# 2. Install dependencies
-npm install
+2. **Install Dependencies**
 
-# 3. Setup environment variables
-Create a `.env` file in root and add:
-MONGO_URI=your_mongodb_uri
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
-SESSION_SECRET=your_session_secret
+   ```bash
+   npm install
+   ```
 
-# 4. Run the server
-npm start
+3. **Setup Environment Variables** (`.env`)
 
-# Visit http://localhost:3000
+   ```env
+   PORT=8080
+   MONGO_URI=your_mongodb_connection
+   STRIPE_SECRET=your_stripe_secret_key
+   STRIPE_PUBLIC=your_stripe_publishable_key
+   ```
+
+4. **Run App**
+
+   ```bash
+   npm start
+   ```
+
+   App will run on: `http://localhost:8080`
+
+---
+
+## 🛒 Booking Flow
+
+1. User selects a listing
+2. Chooses **from/to dates**, number of guests
+3. Confirms booking → Stripe Checkout opens
+4. On successful payment → Booking saved in DB
+5. User can view bookings in **My Bookings**
+6. User can **Download PDF Receipt**
+
+---
+
+## 📑 API Routes
+
+### Listings
+
+* `GET /listings` → All listings
+* `GET /listings/:id` → Single listing details
+
+### Orders
+
+* `POST /orders/create` → Create a booking
+* `GET /orders/my` → Show logged-in user's bookings
+* `GET /orders/:id/receipt` → Download PDF receipt
+
+### Users
+
+* `GET /login` / `POST /login`
+* `GET /register` / `POST /register`
+* `GET /logout`
+
+---
+
+## 📃 PDF Receipt Example
+
+Each booking receipt includes:
+
+* Booking ID
+* Listing Title
+* User Info
+* Dates & Guests
+* Total Fare
+* Payment Status
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create a feature branch (`feature-new`)
+3. Commit changes
+4. Open PR
+
+---
+
+## 📜 License
+
+MIT License © 2025
+
 ```
 
 ---
 
  
-
----
-
-### 🙌 Author
-
-**Pranav Choudhary**  
-[@pranavrajchoudhary](https://github.com/pranavrajchoudhary)  
-
----
-
-### ⭐️ Give it a Star
-If you like this project or learned something, consider giving it a ⭐️ on GitHub!
+```
