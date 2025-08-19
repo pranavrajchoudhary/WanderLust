@@ -11,6 +11,7 @@ require("dotenv").config();
 const listingsRouter = require("./routes/listings");
 const reviewsRouter = require("./routes/reviews");
 const userRouter = require("./routes/user");
+const checkoutRouter = require("./routes/checkout")
 
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -20,7 +21,7 @@ const User = require("./models/user");
 const { send } = require("process");
 const { error } = require("console");
 const dburl = process.env.ATLAS_URL
-
+const Order = require("./models/Order")
 const mongoURL = process.env.MONGO_URI;
 
 app.engine("ejs", ejsMate);
@@ -92,7 +93,27 @@ app.use((req,res,next)=>{
 app.use("/", listingsRouter);
 app.use("/listings", reviewsRouter);
 app.use("/",userRouter);
+app.use("/listings",checkoutRouter)
+app.get("/payment-success", async (req, res) => {
+    try {
+    const { oid } = req.query;
 
+    const order = await Order.findByIdAndUpdate(
+      oid,
+      { status: "paid" },
+      { new: true }
+    ).populate("listing");
+
+    if (!order) return res.status(404).send("Order not found");
+
+    
+    res.render("user/success.ejs", { order });
+  } catch (err) {
+    console.error("Payment Success Error:", err);
+    res.status(500).send("Error in success page");
+  }
+});
+-
 
 // Catch-all 404
 app.use((req, res, next) => {

@@ -200,7 +200,7 @@
         <%= thisListing.description %>
       </p>
       <p class="price">₹ <%= thisListing.price.toLocaleString("en-IN") %> / night</p>
-      <a href="/book/<%= thisListing._id %>" class="btn-book">Book Now</a>
+      <a href="/listings/<%= thisListing._id %>/checkout" class="btn-book">Book Now</a>
 
       <% if(currUser && currUser._id.equals(thisListing.owner._id)){ %>
       <div class="cta">

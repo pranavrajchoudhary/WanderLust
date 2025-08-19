@@ -27,6 +27,8 @@
     }
   </style>
 </head>
+ 
+    <%- include("../partials/flash.ejs") %>
 <body class="p-4">
 
   <!-- Container -->
@@ -40,17 +42,17 @@
 
         <!-- Stay Details -->
         <h2 class="text-xl font-semibold mb-4">Your Stay</h2>
-        <form action="/checkout" method="POST" id="checkoutForm" class="space-y-6">
+        <form action="/listings/<%= listing._id  %>/checkout" method="POST" id="checkoutForm" class="space-y-6">
 
           <!-- Dates -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block mb-1 font-medium">Check-in</label>
-              <input type="date" name="fromDate" required class="w-full border rounded-lg p-2">
+              <input type="date" id="fromDate" name="fromDate" required class="w-full border rounded-lg p-2">
             </div>
             <div>
               <label class="block mb-1 font-medium">Check-out</label>
-              <input type="date" name="toDate" required class="w-full border rounded-lg p-2">
+              <input type="date" id="toDate" name="toDate" required class="w-full border rounded-lg p-2">
             </div>
           </div>
 
@@ -87,6 +89,9 @@
             <textarea name="requests" rows="3" class="w-full border rounded-lg p-2"></textarea>
           </div>
 
+          <!-- Hidden Total Fare -->
+          <input type="hidden" name="totalFare" id="hiddenTotalFare">
+
           <!-- Pay Now -->
           <div class="pt-6">
             <button type="submit" class="w-full py-3 rounded-lg airbnb-btn font-medium text-lg">
@@ -98,7 +103,7 @@
 
       <!-- Right Side: Booking Summary -->
       <div class="airbnb-card">
-        <img src="<%= listing.image %>" alt="Listing Image" class="w-full h-40 object-cover rounded-lg mb-4">
+        <img src="<%= listing.image.url %>" alt="Listing Image" class="w-full h-40 object-cover rounded-lg mb-4">
         <h2 class="text-lg font-semibold mb-2"><%= listing.title %></h2>
         <p class="text-gray-600 mb-1"><%= listing.location %></p>
         <p class="text-gray-900 font-medium mb-4">₹ <%= listing.price %> / night</p>
@@ -106,8 +111,12 @@
         <hr class="my-2">
 
         <div class="flex justify-between text-gray-700 mb-1">
-          <span>Base Price</span>
+          <span>Base Price (per night)</span>
           <span>₹ <%= listing.price %></span>
+        </div>
+        <div class="flex justify-between text-gray-700 mb-1">
+          <span>Nights</span>
+          <span id="nightsCount">0</span>
         </div>
         <div class="flex justify-between text-gray-700 mb-1">
           <span>Service Fee</span>
@@ -115,14 +124,45 @@
         </div>
         <div class="flex justify-between text-gray-900 font-semibold mt-2">
           <span>Total</span>
-          <span>₹ <%= listing.price + 500 %></span>
+          <span id="totalFare">₹ 0</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- JS for Add Guest -->
+  <!-- JS -->
   <script>
+    const pricePerNight =   <%= listing.price %>  ;
+    const serviceFee = 500;
+
+    const fromDateInput = document.getElementById("fromDate");
+    const toDateInput = document.getElementById("toDate");
+    const nightsCountEl = document.getElementById("nightsCount");
+    const totalFareEl = document.getElementById("totalFare");
+    const hiddenTotalFare = document.getElementById("hiddenTotalFare");
+
+    function calculateFare() {
+      const fromDate = new Date(fromDateInput.value);
+      const toDate = new Date(toDateInput.value);
+
+      if (fromDate && toDate && toDate > fromDate) {
+        const nights = Math.round((toDate - fromDate) / (1000 * 60 * 60 * 24));
+        const total = (nights * pricePerNight) + serviceFee;
+
+        nightsCountEl.textContent = nights;
+        totalFareEl.textContent = `₹ ${total}`;
+        hiddenTotalFare.value = total; // Send to backend
+      } else {
+        nightsCountEl.textContent = 0;
+        totalFareEl.textContent = "₹ 0";
+        hiddenTotalFare.value = 0;
+      }
+    }
+
+    fromDateInput.addEventListener("change", calculateFare);
+    toDateInput.addEventListener("change", calculateFare);
+
+    // Add Guest Button
     document.getElementById("addGuestBtn").addEventListener("click", () => {
       const section = document.getElementById("guestDetailsSection");
       const div = document.createElement("div");
