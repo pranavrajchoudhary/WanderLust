@@ -46,8 +46,8 @@ const store = MongoStore.create({
     touchAfter: 24*3600,
 });
 
-store.on("error",()=>{
-    console.log("Session Error -Mongo",error);
+store.on("error",(err)=>{
+    console.log("Session Error -Mongo",err);
 })
 
 const sessionOpt = {
@@ -126,9 +126,15 @@ app.use((req, res, next) => {
 
 // Error handler
 app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err);  
+    }
+
     if (err.name === "ValidationError") err.message = "Invalid Entries";
+
     let { status = 500, message = "Unknown Error Occurred" } = err;
-    res.render("extras/error.ejs", { err });
+
+    res.status(status).render("extras/error.ejs", { err });
 });
 
 app.listen(8080, () => {
